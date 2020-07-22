@@ -83,6 +83,11 @@ class TFilamentMonitor : public FilamentMonitorBase {
     static inline void filament_present(const uint8_t extruder) {
       response.filament_present(extruder);
     }
+// Backup runout reset
+//
+//    static inline void filament_present_backup(const uint8_t extruder) {
+//      response.filament_present_backup(extruder);
+//    }
 
     #if HAS_FILAMENT_RUNOUT_DISTANCE
       static inline float& runout_distance() { return response.runout_distance_mm; }
@@ -122,6 +127,9 @@ class TFilamentMonitor : public FilamentMonitorBase {
 class FilamentSensorBase {
   protected:
     static void filament_present(const uint8_t extruder);
+// Backup runout reset
+//
+//    static void filament_present_backup(const uint8_t extruder);
 
   public:
     static inline void setup() {
@@ -169,6 +177,9 @@ class FilamentSensorBase {
         const uint8_t new_state = poll_runout_pins(),
                       change    = old_state ^ new_state;
         old_state = new_state;
+// Backup runout reset
+//
+//        if (change) filament_present_backup(0);
 
         #ifdef FILAMENT_RUNOUT_SENSOR_DEBUG
           if (change) {
@@ -276,6 +287,20 @@ class FilamentSensorBase {
       static inline void filament_present(const uint8_t extruder) {
         runout_mm_countdown[extruder] = runout_distance_mm;
       }
+
+// Backup runout reset
+//
+//      static inline void filament_present_backup(const uint8_t extruder) {
+//        if (runout_mm_countdown[extruder] < (0.25 * runout_distance_mm)) {
+//          SERIAL_ECHOPGM("Backup runout counter resetting on extruder: ");
+//          SERIAL_ECHO(extruder);
+//          SERIAL_ECHOPGM(" - value prior to reset: ");
+//          SERIAL_ECHO(runout_mm_countdown[extruder]);
+//          runout_mm_countdown[extruder] = runout_distance_mm;
+//          SERIAL_ECHOPGM("; Runout counter reset!");
+//          SERIAL_EOL();
+//        }
+//      }
 
       static inline void block_completed(const block_t* const b) {
         if (b->steps.x || b->steps.y || b->steps.z

@@ -51,6 +51,12 @@ void FilamentSensorBase::filament_present(const uint8_t extruder) {
   runout.filament_present(extruder); // calls response.filament_present(extruder)
 }
 
+// Backup runout reset
+//
+//void FilamentSensorBase::filament_present_backup(const uint8_t extruder) {
+//  runout.filament_present_backup(extruder); // calls response.filament_present_backup(extruder)
+//}
+
 #if HAS_FILAMENT_RUNOUT_DISTANCE
   float RunoutResponseDelayed::runout_distance_mm = FILAMENT_RUNOUT_DISTANCE_MM;
   volatile float RunoutResponseDelayed::runout_mm_countdown[EXTRUDERS];
